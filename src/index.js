@@ -1,6 +1,7 @@
 import SocketServer from "./socket.js";
 import Event from "events";
 import { constants } from './constants.js';
+import Controller from "./controller.js";
 
 const eventEmitter = new Event();
 
@@ -35,6 +36,12 @@ const socketServer = new SocketServer({ port });
 const server = await socketServer.initialize(eventEmitter);
 console.log('socker server is running at', server.address().port);
 
+const controller = new Controller({ socketServer });
+eventEmitter.on(
+    constants.events.NEW_USER_CONNECTED,
+    controller.onNewConnection.bind(controller)
+);
+
 // Test Web Socket Connection - Server Side
 // eventEmitter.on(constants.events.NEW_USER_CONNECTED, (socket) => {
 //     console.log('new connection!', socket.id);
@@ -42,6 +49,5 @@ console.log('socker server is running at', server.address().port);
 //         console.log('server received', data.toString());
 //         socket.write('World!');
 //     });
-// })
-
+// });
 // await testServer();
