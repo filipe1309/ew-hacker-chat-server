@@ -2,7 +2,6 @@
 
 <p align="center">
 <img src="https://img.shields.io/badge/nodejs-15.11.0-blue" />
-<img src="https://img.shields.io/badge/blessed-0.1.81-orange"/>
 </p>
 
 ## 💬 About
