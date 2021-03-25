@@ -1,5 +1,9 @@
+import { constants } from "./constants.js";
+
 export default class Controller {
     #users = new Map();
+    #rooms = new Map();
+    socketServer;
 
     constructor({ socketServer }) {
         this.socketServer = socketServer;
@@ -16,15 +20,61 @@ export default class Controller {
         socket.on('end', this.#onSocketClosed(id));
     }
 
+    async joinRoom(socketId, data) {
+        const userData = data;
+        console.log(`${userData.userName} joined! ${socketId}`);
+        const user = this.#updateGlobalUserData(socketId, userData);
+        
+        const { roomId } = userData;
+        const users = this.#joinUserOnRoom(roomId, user);
+    
+        const currentUsers = Array.from(users.values())
+            .map(({ id, userName }) => ({ userName, id }));
+
+        // Update new connect used with all others users on the room
+        this.socketServer.sendMessage(user.socket, constants.events.UPDATE_USERS, currentUsers);
+    
+        // warn all net a new user connections
+        this.broadcast({
+            socketId,
+            roomId,
+            message: { id: socketId, userName: userData.userName },
+            event: constants.events.NEW_USER_CONNECTED
+        });
+    }
+    
+    broadcast({ socketId, roomId, event, message, includeCurrentSocket = false }) {
+        const usersOnRoom = this.#rooms.get(roomId);
+
+        for (const [key, user] of usersOnRoom) {
+            if (!includeCurrentSocket && key === socketId) continue;
+
+            this.socketServer.sendMessage(user.socket, event, message);
+        }
+    }
+
+    #joinUserOnRoom(roomId, user) {
+        const usersOnRoom = this.#rooms.get(roomId) ?? new Map();
+        usersOnRoom.set(user.id, user);
+        this.#rooms.set(roomId, usersOnRoom);
+    
+        return usersOnRoom;
+    }
+
     #onSocketData(id) {
         return data => {
-            console.log('onSocketData', data.toString());
+            try {
+                const { event, message } = JSON.parse(data);
+                this[event](id, message);
+            } catch (e) {
+                console.error('wrong event format!', data.toString());
+            }
         }
     }
 
     #onSocketClosed(id) {
         return data => {
-            console.log('onSocketClosed', data.toString());
+            console.log('onSocketClosed', id);
         }
     }
 
