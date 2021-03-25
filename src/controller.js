@@ -53,6 +53,17 @@ export default class Controller {
         }
     }
 
+    message(socketId, data) {
+        const { userName, roomId } = this.#users.get(socketId);
+        this.broadcast({
+            roomId,
+            socketId,
+            event: constants.events.MESSAGE,
+            message: { userName, message: data },
+            includeCurrentSocket: true
+        });
+    }
+
     #joinUserOnRoom(roomId, user) {
         const usersOnRoom = this.#rooms.get(roomId) ?? new Map();
         usersOnRoom.set(user.id, user);
