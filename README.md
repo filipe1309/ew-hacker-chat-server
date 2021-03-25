@@ -6,7 +6,7 @@
 
 ## 💬 About
 
-Project developed during EW JS Expert v2.
+Project developed during EW JS Expert v3.
 
 ### Client application
 
