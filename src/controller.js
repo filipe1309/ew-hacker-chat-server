@@ -26,8 +26,11 @@ export default class Controller {
         const { roomId } = userData;
         const users = this.#joinUserOnRoom(roomId, userData);
     
+        const currentsUser = Array.from(users.values())
+            .map(({ id, userName }) => ({ userName, id }));
+
         // Update new connect used with all others users on the room
-        this.socketServer.sendMessage(userData.socket, constants.events.UPDATE_USERS);
+        this.socketServer.sendMessage(userData.socket, constants.events.UPDATE_USERS, currentsUser);
     
         const user = this.#updateGlobalUserData(socketId, userData);
     }
@@ -42,13 +45,18 @@ export default class Controller {
 
     #onSocketData(id) {
         return data => {
-            console.log('onSocketData', data.toString());
+            try {
+                const { event, message } = JSON.parse(data);
+                this[event](id, message);
+            } catch (e) {
+                console.error('wrong event format!', data.toString());
+            }
         }
     }
 
     #onSocketClosed(id) {
         return data => {
-            console.log('onSocketClosed', data.toString());
+            console.log('onSocketClosed', id);
         }
     }
 
