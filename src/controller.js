@@ -21,18 +21,19 @@ export default class Controller {
     }
 
     async joinRoom(socketId, data) {
-        const userData = JSON.parse(data);
-        console.log(`${userData.userName} joined!` [socketId]);
+        const userData = data;
+        console.log(`${userData.userName} joined! ${socketId}`);
+        const user = this.#updateGlobalUserData(socketId, userData);
+        
         const { roomId } = userData;
-        const users = this.#joinUserOnRoom(roomId, userData);
+        const users = this.#joinUserOnRoom(roomId, user);
     
         const currentsUser = Array.from(users.values())
             .map(({ id, userName }) => ({ userName, id }));
 
         // Update new connect used with all others users on the room
-        this.socketServer.sendMessage(userData.socket, constants.events.UPDATE_USERS, currentsUser);
+        this.socketServer.sendMessage(user.socket, constants.events.UPDATE_USERS, currentsUser);
     
-        const user = this.#updateGlobalUserData(socketId, userData);
     }
     
     #joinUserOnRoom(roomId, user) {
