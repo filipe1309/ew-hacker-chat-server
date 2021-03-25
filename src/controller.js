@@ -1,4 +1,4 @@
-import { constants } from "./constants";
+import { constants } from "./constants.js";
 
 export default class Controller {
     #users = new Map();
@@ -36,7 +36,7 @@ export default class Controller {
     }
     
     #joinUserOnRoom(roomId, user) {
-        const usersOnRoom = this.#rooms.get(roomId); ?? new Map();
+        const usersOnRoom = this.#rooms.get(roomId) ?? new Map();
         usersOnRoom.set(user.id, user);
         this.#rooms.set(roomId, usersOnRoom);
     
