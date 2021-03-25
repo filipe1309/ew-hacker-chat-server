@@ -28,14 +28,31 @@ export default class Controller {
         const { roomId } = userData;
         const users = this.#joinUserOnRoom(roomId, user);
     
-        const currentsUser = Array.from(users.values())
+        const currentUsers = Array.from(users.values())
             .map(({ id, userName }) => ({ userName, id }));
 
         // Update new connect used with all others users on the room
-        this.socketServer.sendMessage(user.socket, constants.events.UPDATE_USERS, currentsUser);
+        this.socketServer.sendMessage(user.socket, constants.events.UPDATE_USERS, currentUsers);
     
+        // warn all net a new user connections
+        this.broadcast({
+            socketId,
+            roomId,
+            message: { id: socketId, userName: userData.userName },
+            event: constants.events.NEW_USER_CONNECTED
+        });
     }
     
+    broadcast({ socketId, roomId, event, message, includeCurrentSocket = false }) {
+        const usersOnRoom = this.#rooms.get(roomId);
+
+        for (const [key, user] of usersOnRoom) {
+            if (!includeCurrentSocket && key === socketId) continue;
+
+            this.socketServer.sendMessage(user.socket, event, message);
+        }
+    }
+
     #joinUserOnRoom(roomId, user) {
         const usersOnRoom = this.#rooms.get(roomId) ?? new Map();
         usersOnRoom.set(user.id, user);
