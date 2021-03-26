@@ -8,6 +8,10 @@
 
 Project developed during EW JS Expert v3.
 
+### Server URL
+
+https://ew-hacker-chat-server.herokuapp.com/
+
 ### Client application
 
 https://github.com/filipe1309/ew-hacker-chat-client
@@ -16,9 +20,11 @@ https://github.com/filipe1309/ew-hacker-chat-client
 
 -   [Nodejs](https://nodejs.org/en/)
 
-## :octocat: Setup
+## :octocat: Contributing
 
-### Installation
+Feedback, bug reports, and pull requests are welcome!
+
+### 💿 Installing
 
 ```sh
 # Clone this repo
@@ -31,12 +37,13 @@ cd ew-hacker-chat-server
 npm ci
 ```
 
-### 🏃 Runnning
+### 🏃 Local Runnning
 
 ```sh
-npm start
-# app will run at: http://localhost:9898
+npm run dev
 ```
+
+app will run at: http://localhost:9898
 
 ---
 

@@ -21,3 +21,8 @@ git push heroku master
 
 heroku open
 heroku logs -t
+
+https://ew-hacker-chat-server.herokuapp.com/
+
+heroku apps:delete
+ew-hacker-chat-server
