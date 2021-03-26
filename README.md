@@ -6,7 +6,9 @@
 
 ## 💬 About
 
-Project developed during EW JS Expert v3.
+Hacker chat server implemented with WebSocket and NodeJS.
+
+> Project developed during EW JS Expert v3.
 
 ### Server URL
 
@@ -19,6 +21,10 @@ https://github.com/filipe1309/ew-hacker-chat-client
 ## :computer: Technologies
 
 -   [Nodejs](https://nodejs.org/en/)
+
+## 📜 Requirements
+
+-   [Nodejs v15](https://nodejs.org/en/)
 
 ## :octocat: Contributing
 
